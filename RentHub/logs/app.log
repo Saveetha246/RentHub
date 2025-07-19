@@ -1,0 +1,78 @@
+2025-06-26 00:03:46 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:03:47 [owner,/] INFO  c.r.p.controller.PropertyController
+                - Adding new property: com.rental.property.dto.PropertyRequestDto@4f15836c
+2025-06-26 00:03:51 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:03:51 [owner,/] INFO  c.r.p.controller.UserController
+                - Fetching profile details for user ID: 3
+2025-06-26 00:03:51 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:03:51 [owner,/] INFO  c.r.p.controller.UserController
+                - Fetching profile details for user ID: 3
+2025-06-26 00:03:54 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:03:54 [owner,/] INFO  c.r.p.controller.PropertyController
+                - Fetching all properties for owner ID: 3
+2025-06-26 00:03:54 [owner,/] INFO  c.r.p.service.PropertyServiceImpl
+                - Total records fetched from DB = 1 total pages = 1 records in each page 0 is 1 
+2025-06-26 00:03:54 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:03:54 [owner,/] INFO  c.r.p.controller.PropertyController
+                - Fetching all properties for owner ID: 3
+2025-06-26 00:03:54 [owner,/] INFO  c.r.p.service.PropertyServiceImpl
+                - Total records fetched from DB = 1 total pages = 1 records in each page 0 is 1 
+2025-06-26 00:03:56 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:03:56 [owner,/] INFO  c.r.p.controller.UserController
+                - Fetching profile details for user ID: 3
+2025-06-26 00:03:56 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:03:56 [owner,/] INFO  c.r.p.controller.UserController
+                - Fetching profile details for user ID: 3
+2025-06-26 00:04:54 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:04:54 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:04:55 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:04:55 [owner,/] INFO  c.r.p.controller.PropertyController
+                - Fetching all properties for owner ID: 3
+2025-06-26 00:04:55 [owner,/] INFO  c.r.p.service.PropertyServiceImpl
+                - Total records fetched from DB = 1 total pages = 1 records in each page 0 is 1 
+2025-06-26 00:04:55 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:04:55 [owner,/] INFO  c.r.p.controller.PropertyController
+                - Fetching all properties for owner ID: 3
+2025-06-26 00:04:55 [owner,/] INFO  c.r.p.service.PropertyServiceImpl
+                - Total records fetched from DB = 1 total pages = 1 records in each page 0 is 1 
+2025-06-26 00:05:00 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:05:00 [owner,/] INFO  c.r.p.controller.UserController
+                - Fetching profile details for user ID: 3
+2025-06-26 00:05:00 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username Sakthi , role s ize 1
+2025-06-26 00:05:00 [owner,/] INFO  c.r.p.controller.UserController
+                - Fetching profile details for user ID: 3
+2025-06-26 00:05:15 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username tenant , role s ize 1
+2025-06-26 00:05:15 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username tenant , role s ize 1
+2025-06-26 00:05:15 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username tenant , role s ize 1
+2025-06-26 00:05:15 [owner,/] INFO  c.r.p.c.RentalTransactionController
+                - Fetching all properties
+2025-06-26 00:05:15 [owner,/] INFO  c.r.p.s.CustomUserDetailsService
+                - User   found username tenant , role s ize 1
+2025-06-26 00:05:15 [owner,/] INFO  c.r.p.c.RentalTransactionController
+                - Fetching all properties
+2025-06-26 00:14:20 [owner,/] INFO  o.s.b.w.e.tomcat.GracefulShutdown
+                - Commencing graceful shutdown. Waiting for active requests to complete
+2025-06-26 00:14:20 [owner,/] INFO  o.s.b.w.e.tomcat.GracefulShutdown
+                - Graceful shutdown complete
+2025-06-26 00:14:20 [owner,/] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean
+                - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-26 00:14:20 [owner,/] INFO  com.zaxxer.hikari.HikariDataSource
+                - HikariPool-1 - Shutdown initiated...
+2025-06-26 00:14:20 [owner,/] INFO  com.zaxxer.hikari.HikariDataSource
+                - HikariPool-1 - Shutdown completed.

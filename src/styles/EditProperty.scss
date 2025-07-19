@@ -1,0 +1,122 @@
+.edit-property-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  h1 {
+      color: #1a3e72; 
+      text-align: center;
+      margin-bottom: 30px;
+  }
+
+  .edit-property-form {
+      display: grid;
+      gap: 20px;
+
+      .form-group {
+          display: flex;
+          flex-direction: column;
+
+          label {
+              margin-bottom: 8px;
+              font-weight: bold;
+              color: #2d3748; 
+          }
+
+          input[type="text"],
+          input[type="number"],
+          select,
+          textarea {
+              padding: 10px;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              font-size: 16px;
+              &:focus {
+                  border-color: #00b4a6; 
+                  outline: none;
+                  box-shadow: 0 0 0 0.2rem rgba(0, 180, 166, 0.25); 
+              }
+          }
+
+          textarea {
+              resize: vertical;
+              min-height: 80px;
+          }
+      }
+
+      .address-section {
+          border: 1px solid #eee;
+          padding: 15px;
+          border-radius: 8px;
+          background-color: #fff;
+
+          h3 {
+              color: #1a3e72; 
+              margin-top: 0;
+              margin-bottom: 15px;
+              border-bottom: 1px solid #eee;
+              padding-bottom: 10px;
+          }
+      }
+
+      .form-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 15px;
+          margin-top: 20px;
+
+          button {
+              padding: 12px 25px;
+              border: none;
+              border-radius: 5px;
+              font-size: 16px;
+              cursor: pointer;
+              transition: background-color 0.3s ease, transform 0.2s ease;
+
+              &:disabled {
+                  background-color: #cccccc;
+                  cursor: not-allowed;
+                  opacity: 0.7;
+              }
+          }
+
+          .save-button {
+              background-color: #ff7d00; 
+              color: white;
+              &:not(:disabled):hover {
+                  background-color: #e66a00; 
+                  transform: translateY(-2px);
+              }
+          }
+
+          .cancel-button {
+              background-color: #2d3748; 
+              color: white;
+              &:not(:disabled):hover {
+                  background-color: #252c36; 
+                  transform: translateY(-2px);
+              }
+          }
+
+          .success-message {
+              color: green;
+              text-align: center;
+              margin-top: 20px;
+          }
+      }
+  }
+
+  .loading-message, .error-message, .no-data-message {
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      color: #1a3e72; 
+  }
+
+  .error-message {
+      color: #dc3545; 
+  }
+}

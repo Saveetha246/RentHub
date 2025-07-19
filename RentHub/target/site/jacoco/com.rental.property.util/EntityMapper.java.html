@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EntityMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property.util</a> &gt; <span class="el_source">EntityMapper.java</span></div><h1>EntityMapper.java</h1><pre class="source lang-java linenums">package com.rental.property.util;
+import com.rental.property.dto.PropertyRequestDto;
+import com.rental.property.dto.PropertyResponseDto;
+import com.rental.property.entity.Address;
+import com.rental.property.entity.Property;
+import org.springframework.stereotype.Component;
+import java.util.List;
+import java.util.stream.Collectors;
+@Component
+<span class="fc" id="L10">public class EntityMapper {</span>
+    public Property convertPropRequestDtoToProperty(PropertyRequestDto propertyRequestDto) {
+<span class="fc" id="L12">        Address address = new Address(propertyRequestDto.getAddress().getStreetName(), propertyRequestDto.getAddress().getCity(),</span>
+<span class="fc" id="L13">                propertyRequestDto.getAddress().getState(), propertyRequestDto.getAddress().getPinCode());</span>
+<span class="fc" id="L14">        return Property.builder()</span>
+<span class="fc" id="L15">                .address(address)</span>
+<span class="fc" id="L16">                .propertyType(propertyRequestDto.getPropertyType())</span>
+<span class="fc" id="L17">                .bhk(propertyRequestDto.getBhk())</span>
+<span class="fc" id="L18">                .rentAmount(propertyRequestDto.getRentAmount())</span>
+<span class="fc" id="L19">                .availabilityStatus(propertyRequestDto.getAvailabilityStatus())</span>
+<span class="fc" id="L20">                .description(propertyRequestDto.getDescription())</span>
+<span class="fc" id="L21">                .build();</span>
+    }
+    public PropertyResponseDto convertPropToPropResponseDto(Property property) {
+<span class="fc" id="L24">        Address address = new Address(property.getAddress().getStreetName(), property.getAddress().getCity(),</span>
+<span class="fc" id="L25">                property.getAddress().getState(), property.getAddress().getPinCode());</span>
+<span class="fc" id="L26">        return PropertyResponseDto.builder()</span>
+<span class="fc" id="L27">                .propertyId(property.getPropertyId())</span>
+<span class="fc" id="L28">                .landLordId(property.getLandlordId())</span>
+<span class="fc" id="L29">                .address(address)</span>
+<span class="fc" id="L30">                .propertyType(property.getPropertyType())</span>
+<span class="fc" id="L31">                .bhk(property.getBhk())</span>
+<span class="fc" id="L32">                .rentAmount(property.getRentAmount())</span>
+<span class="fc" id="L33">                .availabilityStatus(property.getAvailabilityStatus())</span>
+<span class="fc" id="L34">                .description(property.getDescription())</span>
+<span class="fc" id="L35">                .image1(property.getImage1())</span>
+<span class="fc" id="L36">                .build();</span>
+    }
+    public List&lt;PropertyResponseDto&gt; propListToPropResponseDtoList(List&lt;Property&gt; properties) {
+<span class="fc" id="L39">        List&lt;PropertyResponseDto&gt; propertyResponseDtoList=</span>
+<span class="fc" id="L40">                properties.stream().map(p-&gt;convertPropToPropResponseDto(p)).collect(Collectors.toList());</span>
+<span class="fc" id="L41">        return propertyResponseDtoList;</span>
+    }
+    public List&lt;Property&gt; propRequestDtoListToPropList(List&lt;PropertyRequestDto&gt; propertyRequestDtoList){
+<span class="fc" id="L44">        List&lt;Property&gt; propertyList=</span>
+<span class="fc" id="L45">                propertyRequestDtoList.stream().map(p-&gt;convertPropRequestDtoToProperty(p)).collect(Collectors.toList());</span>
+<span class="fc" id="L46">        return propertyList;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

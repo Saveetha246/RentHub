@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PaymentMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property.util</a> &gt; <span class="el_source">PaymentMapper.java</span></div><h1>PaymentMapper.java</h1><pre class="source lang-java linenums">package com.rental.property.util;
+
+import com.rental.property.dto.PaymentDTO;
+import com.rental.property.dto.PaymentTenantResponse;
+import com.rental.property.entity.Payment;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@NoArgsConstructor
+public class PaymentMapper {
+
+    public static PaymentDTO toDTO(Payment payment) {
+<span class="fc" id="L14">        return new PaymentDTO(</span>
+<span class="pc bpc" id="L15" title="1 of 2 branches missed.">                payment.getLease() != null ? payment.getLease().getLeaseId() : null,</span>
+<span class="fc" id="L16">                payment.getAmount(),</span>
+<span class="fc" id="L17">                payment.getPaymentDate(),</span>
+<span class="fc" id="L18">                payment.getPaymentInfo(),</span>
+<span class="fc" id="L19">                payment.getStatus(),</span>
+<span class="fc" id="L20">                payment.getLease().getProperty().getBhk(),</span>
+<span class="fc" id="L21">                payment.getLease().getProperty().getPropertyType(),</span>
+<span class="fc" id="L22">                payment.getLease().getProperty().getAddress()</span>
+        );
+    }
+
+    public static Payment toEntity(PaymentDTO dto) {
+<span class="fc" id="L27">        Payment payment = new Payment();</span>
+<span class="fc" id="L28">        payment.setAmount(dto.getAmount());</span>
+<span class="fc" id="L29">        payment.setPaymentDate(dto.getPaymentDate());</span>
+<span class="fc" id="L30">        payment.setStatus(dto.getStatus());</span>
+<span class="fc" id="L31">        payment.setPaymentInfo(dto.getPaymentInfo());</span>
+<span class="fc" id="L32">        return payment;</span>
+    }
+
+    public  static PaymentTenantResponse toTenantResponse(Payment payment){
+<span class="fc" id="L36">        return PaymentTenantResponse.builder().bhk(payment.getLease().getProperty().getBhk())</span>
+<span class="fc" id="L37">                .propertyType(payment.getLease().getProperty().getPropertyType()).address(payment.getLease().getProperty().getAddress()).amount(payment.getAmount()).</span>
+<span class="fc" id="L38">                paymentDate(payment.getPaymentDate()).status(payment.getStatus()).build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

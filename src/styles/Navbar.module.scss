@@ -1,0 +1,110 @@
+@import '../styles/variables.scss'; 
+@import './mixins'; 
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: $primary-color;
+  color: $text-color-light;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: $font; 
+
+  .logoContainer {
+    display: flex;
+    align-items: center;
+
+    .houseIcon {
+      font-size: 1.8rem;
+      margin-right: 0.5rem;
+      color: $text-color-light; 
+    }
+
+    .logoText {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+  }
+
+  .navLinks {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      margin-left: 2rem;
+      position: relative; 
+    }
+
+    a, .dropdownToggle {
+      color: $text-color-light;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 0.5rem 0.8rem;
+      transition: color 0.3s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-family: $font; 
+
+      
+      
+      
+    }
+
+    .dropdownToggle {
+      font-weight: 500;
+
+      .dropdownIcon {
+        margin-left: 0.5rem;
+        transition: transform 0.3s ease;
+
+        &.rotate {
+          transform: rotate(180deg);
+        }
+      }
+    }
+
+    .dropdownMenu {
+      position: absolute;
+      top: calc(100% + 5px); 
+      left: 50%;
+      transform: translateX(-50%); 
+      background-color: $secondary-color; 
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      list-style: none;
+      padding: 0.5rem 0;
+      margin: 0;
+      border-radius: $border-radius;
+      z-index: 1000;
+      min-width: 160px; 
+      overflow: hidden; 
+
+      li {
+        margin: 0;
+        width: 100%; 
+
+        a, button {
+          display: block;
+          padding: 0.8rem 1.2rem;
+          color: $text-color-light; 
+          white-space: nowrap; 
+          font-family: $font; 
+          background: none;
+          border: none;
+          cursor: pointer;
+          text-align: left;
+
+          &:hover {
+            
+            color: $text-color-light; 
+          }
+        }
+      }
+    }
+  }
+}

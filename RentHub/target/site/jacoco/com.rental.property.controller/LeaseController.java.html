@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LeaseController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property.controller</a> &gt; <span class="el_source">LeaseController.java</span></div><h1>LeaseController.java</h1><pre class="source lang-java linenums">package com.rental.property.controller;
+
+import com.rental.property.dto.LeaseAgreementDTO;
+import com.rental.property.dto.LeaseResponseDTO;
+import com.rental.property.service.LeaseService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping(&quot;/api/v1&quot;)
+@RequiredArgsConstructor
+<span class="fc" id="L21">@Slf4j</span>
+public class LeaseController {
+
+    private final LeaseService leaseService;
+
+    @GetMapping(&quot;generate/{transactionId}&quot;)
+    public ResponseEntity&lt;byte[]&gt; previewLeaseAgreement(@PathVariable Long transactionId) {
+<span class="nc" id="L28">        byte[] pdfData = leaseService.generateLeasePreview(transactionId);</span>
+<span class="nc" id="L29">        return ResponseEntity.ok()</span>
+<span class="nc" id="L30">                .header(HttpHeaders.CONTENT_DISPOSITION, &quot;inline; filename=lease-agreement-preview.pdf&quot;)</span>
+<span class="nc" id="L31">                .contentType(MediaType.APPLICATION_PDF)</span>
+<span class="nc" id="L32">                .body(pdfData);</span>
+    }
+
+    @PostMapping(&quot;/sign/{transactionId}&quot;)
+    public ResponseEntity&lt;?&gt; confirmLease(@PathVariable Long transactionId) {
+        try {
+<span class="fc" id="L38">            LeaseResponseDTO response = leaseService.confirmLeaseAndGetSignedPdf(transactionId);</span>
+<span class="fc" id="L39">            return new ResponseEntity&lt;&gt;(response, HttpStatus.OK);</span>
+
+<span class="fc" id="L41">        } catch (RuntimeException e) {</span>
+<span class="fc" id="L42">            log.error(&quot;Error confirming lease for transaction ID {}: {}&quot;, transactionId, e.getMessage());</span>
+<span class="fc" id="L43">            return new ResponseEntity&lt;&gt;(&quot;Error: &quot; + e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L44">        } catch (Exception e) {</span>
+<span class="nc" id="L45">            log.error(&quot;Unexpected error confirming lease for transaction ID {}: {}&quot;, transactionId, e.getMessage());</span>
+<span class="nc" id="L46">            return new ResponseEntity&lt;&gt;(&quot;Internal server error during lease confirmation.&quot;, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+        }
+    }
+
+    @PostMapping(&quot;/renew/{transactionId}&quot;)
+    public ResponseEntity&lt;byte[]&gt; renewLease(@PathVariable Long transactionId) {
+<span class="nc" id="L52">        byte[] renewedPdf = leaseService.renewLease(transactionId);</span>
+<span class="nc" id="L53">        return ResponseEntity.ok()</span>
+<span class="nc" id="L54">                .header(HttpHeaders.CONTENT_DISPOSITION, &quot;attachment; filename=renewed-lease.pdf&quot;)</span>
+<span class="nc" id="L55">                .contentType(MediaType.APPLICATION_PDF)</span>
+<span class="nc" id="L56">                .body(renewedPdf);</span>
+    }
+
+    @PutMapping(&quot;/terminate/{propertyId}&quot;)
+    public ResponseEntity&lt;String&gt; terminateLease(@PathVariable Long propertyId) {
+<span class="fc" id="L61">        String result = leaseService.terminateLease(propertyId);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (result.contains(&quot;successfully&quot;)) {</span>
+<span class="fc" id="L63">            return ResponseEntity.ok(result);</span>
+        } else {
+<span class="fc" id="L65">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);</span>
+        }
+    }
+
+    @GetMapping(&quot;/lease/{tenantId}&quot;)
+    public ResponseEntity&lt;List&lt;LeaseAgreementDTO&gt;&gt; getLeasesByTenantId(@PathVariable Long tenantId) {
+<span class="fc" id="L71">        log.warn(&quot;Accessing lease details directly by tenantId {}. Ensure this endpoint is secured by other means if exposed.&quot;, tenantId);</span>
+<span class="fc" id="L72">        List&lt;LeaseAgreementDTO&gt; leases = leaseService.getAllActiveLeasesByTenantId(tenantId);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (leases.isEmpty()) {</span>
+<span class="fc" id="L74">            return ResponseEntity.noContent().build();</span>
+        }
+<span class="fc" id="L76">        return ResponseEntity.ok(leases);</span>
+    }
+
+    @GetMapping(&quot;/leasedetails/{propertyId}&quot;)
+    public ResponseEntity&lt;?&gt; getActiveLeaseDetailsByProperty(@PathVariable Long propertyId) {
+<span class="fc" id="L81">        Optional&lt;LeaseAgreementDTO&gt; activeLease = leaseService.getActiveLeaseDetailsByProperty(propertyId);</span>
+<span class="fc" id="L82">        return activeLease.map(ResponseEntity::ok)</span>
+<span class="fc" id="L83">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

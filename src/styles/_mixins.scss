@@ -1,0 +1,35 @@
+@import 'variables'; 
+
+
+@mixin dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px); 
+  left: 50%;
+  transform: translateX(-50%); 
+  
+  
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0;
+  border-radius: $border-radius;
+  z-index: 1000;
+  min-width: 160px; 
+
+  li {
+    margin: 0;
+    width: 100%; 
+
+    a {
+      display: block;
+      padding: 0.8rem 1.2rem;
+      color: #1a3e72; 
+      white-space: nowrap; 
+      font-family: $font-family-body; 
+
+      &:hover {
+        background-color: #1a3e72; 
+        color: #1a3e72; 
+      }
+    }
+  }
+}

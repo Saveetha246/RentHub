@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PropertyServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property.service</a> &gt; <span class="el_source">PropertyServiceImpl.java</span></div><h1>PropertyServiceImpl.java</h1><pre class="source lang-java linenums">package com.rental.property.service;
+import com.rental.property.dto.PropertyRequestDto;
+import com.rental.property.dto.PropertyResponseDto;
+import com.rental.property.dto.RentalTransactionResponseDto;
+import com.rental.property.entity.Property;
+import com.rental.property.entity.RentalTransaction;
+import com.rental.property.entity.User;
+import com.rental.property.exception.PropertyNotFoundException;
+import com.rental.property.repo.PropertyRepository;
+import com.rental.property.repo.RentalTransactionRepository;
+import com.rental.property.repo.UserRepository;
+import com.rental.property.util.EntityMapper;
+import com.rental.property.util.RentalTransactionMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L32">@Slf4j</span>
+@RequiredArgsConstructor
+@Service
+
+public class PropertyServiceImpl implements PropertyService {
+
+    private final PropertyRepository propertyRepository;
+    private final EntityMapper entityMapper;
+    private final UserRepository userRepository;
+    private final RentalTransactionRepository rentalTransactionRepository;
+    private final RentalTransactionMapper rentalTransactionMapper;
+
+    @Override
+    public PropertyResponseDto addNewProperty(PropertyRequestDto propertyRequestDto, MultipartFile image) throws IOException {
+<span class="nc" id="L46">        Property propObj = entityMapper.convertPropRequestDtoToProperty(propertyRequestDto);</span>
+// propObj.setLandlordId(propObj.getUser().getId());
+        Set&lt;String&gt; roles =
+<span class="nc" id="L49">                SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (roles.contains(&quot;ROLE_LANDLORD&quot;)) {</span>
+<span class="nc" id="L51">            Long currentLandLordId = getCurrentLandLordId();</span>
+<span class="nc" id="L52">            User landlord = userRepository.findById(currentLandLordId).get();</span>
+<span class="nc" id="L53">            propObj.setUser(landlord);</span>
+<span class="nc" id="L54">            propObj.setImage1(image.getBytes());</span>
+<span class="nc" id="L55">            propObj.setLandlordId(currentLandLordId);</span>
+<span class="nc" id="L56">            propObj.setCreatedBy(landlord.getUsername());</span>
+<span class="nc" id="L57">            propObj.setCreatedDate(LocalDateTime.now());</span>
+<span class="nc" id="L58">            Property savedProp = propertyRepository.save(propObj);</span>
+<span class="nc" id="L59">            return entityMapper.convertPropToPropResponseDto(savedProp);</span>
+        } else {
+<span class="nc" id="L61">            throw new RuntimeException(&quot;Sign in as landlord&quot;);</span>
+        }
+    }
+
+    private Long getCurrentLandLordId() {
+<span class="fc" id="L66">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="pc bpc" id="L67" title="3 of 6 branches missed.">        if (authentication != null &amp;&amp; authentication.isAuthenticated() &amp;&amp; authentication.getPrincipal() instanceof UserDetails) {</span>
+<span class="fc" id="L68">            UserDetails userDetails = (UserDetails) authentication.getPrincipal();</span>
+<span class="fc" id="L69">            String username = userDetails.getUsername();</span>
+<span class="fc" id="L70">            User user =</span>
+<span class="pc" id="L71">                    userRepository.findByUsername(username).orElseThrow(() -&gt; new RuntimeException(&quot;Authenticated User &quot; +</span>
+                            &quot;Not Found in DataBase&quot;));
+<span class="fc" id="L73">            return user.getId();</span>
+        } else {
+<span class="nc" id="L75">            throw new RuntimeException(&quot;Unable to retrieve current landlord ID: User not authenticated.&quot;);</span>
+        }
+    }
+
+    @Override
+    public PropertyResponseDto getPropertyById(Long propertyId) {
+<span class="nc" id="L81">        Property property = propertyRepository.findById(propertyId).orElseThrow(() -&gt; new PropertyNotFoundException(&quot;No &quot; +</span>
+                &quot;such &quot; +
+                &quot;property&quot;));
+<span class="nc" id="L84">        return entityMapper.convertPropToPropResponseDto(property);</span>
+    }
+
+    @Override
+    public PropertyResponseDto updateProperty(Long propertyId, PropertyRequestDto propertyRequestDto) {
+<span class="pc" id="L89">        Property existing = propertyRepository.findById(propertyId).orElseThrow(() -&gt; new PropertyNotFoundException(&quot;No such property&quot;));</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if (existing.getUser().getId() == getCurrentLandLordId()) {</span>
+<span class="nc" id="L91">            existing.setAddress(propertyRequestDto.getAddress());</span>
+<span class="nc" id="L92">            existing.setDescription(propertyRequestDto.getDescription());</span>
+<span class="nc" id="L93">            existing.setAvailabilityStatus(propertyRequestDto.getAvailabilityStatus());</span>
+<span class="nc" id="L94">            existing.setRentAmount(propertyRequestDto.getRentAmount());</span>
+<span class="nc" id="L95">            existing.setPropertyType(propertyRequestDto.getPropertyType());</span>
+<span class="nc" id="L96">            existing.setUpdatedBy(existing.getUser().getUsername());</span>
+<span class="nc" id="L97">            existing.setUpdatedDate(LocalDateTime.now());</span>
+<span class="nc" id="L98">            existing.setLandlordId(existing.getLandlordId());</span>
+<span class="nc" id="L99">            propertyRepository.save(existing);</span>
+<span class="nc" id="L100">            return entityMapper.convertPropToPropResponseDto(existing);</span>
+        } else {
+<span class="fc" id="L102">            throw new AuthorizationDeniedException(&quot;This property does not belongs to you&quot;);</span>
+        }
+    }
+
+    @Override
+    public void deleteProperty(Long propertyId) {
+<span class="pc" id="L108">        Property property = propertyRepository.findById(propertyId).orElseThrow(() -&gt; new PropertyNotFoundException(</span>
+                &quot;property does not exist&quot;));
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        if (property.getUser().getId() == getCurrentLandLordId()) {</span>
+<span class="nc" id="L111">            propertyRepository.deleteById(propertyId);</span>
+        } else {
+<span class="fc" id="L113">            throw new AuthorizationDeniedException(&quot;This property does not belongs to you&quot;);</span>
+        }
+<span class="nc" id="L115">    }</span>
+
+    @Override
+    public List&lt;PropertyResponseDto&gt; getAllPropertyByLandLordId(Long id, Pageable pageable) {
+<span class="nc" id="L119">        Page&lt;Property&gt; propertyPage = propertyRepository.findPropertyByOwnerId(id, pageable);</span>
+<span class="nc" id="L120">        List&lt;Property&gt; propertyList = propertyPage.getContent();</span>
+<span class="nc" id="L121">        log.info(&quot;Total records fetched from DB = {} total pages = {} records in each page {} is {} &quot;,</span>
+<span class="nc" id="L122">                propertyPage.getTotalElements(), propertyPage.getTotalPages(), propertyPage.getNumber(), propertyList.size());</span>
+<span class="nc" id="L123">        return entityMapper.propListToPropResponseDtoList(propertyList);</span>
+    }
+
+    @Override
+    public void updateApplicationStatus(Long tenantId, String status) {
+<span class="nc" id="L128">        RentalTransaction rentalTransaction = rentalTransactionRepository.findById(tenantId).get();</span>
+//        Long landLordId = rentalTransaction.getProperty().getUser().getId();
+//        if (getCurrentLandLordId() == landLordId) {
+<span class="nc" id="L131">            rentalTransaction.setStatus(status);</span>
+<span class="nc" id="L132">            rentalTransactionRepository.save(rentalTransaction);</span>
+//        } else {
+//            throw new AuthorizationDeniedException(&quot;This property does not belongs to you&quot;);
+//        }
+<span class="nc" id="L136">    }</span>
+
+    @Override
+    public List&lt;RentalTransactionResponseDto&gt; getAllTenantTransactions(Long propertyId) {
+<span class="nc" id="L140">        Property property = propertyRepository.findById(propertyId).get();</span>
+<span class="nc" id="L141">        List&lt;RentalTransaction&gt; rentalTransactionList = rentalTransactionRepository.findByProperty(property);</span>
+<span class="nc" id="L142">        return RentalTransactionMapper.convertToResponseDtoList(rentalTransactionList);</span>
+    }
+
+//    @Override
+//    public List&lt;RentalTransactionResponseDto&gt; getAllTenantTransactionsByLandLordId(Long landlordId) {
+//        List&lt;RentalTransaction&gt; rentalTransactionList=rentalTransactionRepository.findByLandLordId(landlordId);
+//        return RentalTransactionMapper.convertToResponseDtoList(rentalTransactionList);
+//    }
+//    @Override
+//    public byte[] getImage(Long propertyId) {
+//        return propertyRepository.findById(propertyId).get().getImage1();
+//    }
+
+    @Override
+    public List&lt;RentalTransactionResponseDto&gt; getAllTenantTransactionsByLandLordId(Long landlordId) {
+<span class="nc" id="L157">        List&lt;RentalTransaction&gt; rentalTransactionList=rentalTransactionRepository.findByLandLordId(landlordId);</span>
+<span class="nc" id="L158">        return RentalTransactionMapper.convertToResponseDtoList(rentalTransactionList);</span>
+    }
+
+    @Override
+    public List&lt;PropertyResponseDto&gt; getAllPropertyById(Long id) {
+
+<span class="nc" id="L164">        User tenant = userRepository.findById(id).orElseThrow(() -&gt; new RuntimeException(&quot;Tenant not found with ID: &quot; + id));</span>
+<span class="nc" id="L165">        List&lt;RentalTransaction&gt; rentedTransactions = rentalTransactionRepository.findAllByUser_Id(id);</span>
+<span class="nc" id="L166">        log.info(&quot;Rented transactions {}&quot;,rentedTransactions);</span>
+<span class="nc" id="L167">        List&lt;RentalTransaction&gt; rentalTransactionList=rentedTransactions.stream().filter(r-&gt;r.getStatus().equals(</span>
+<span class="nc" id="L168">                &quot;Completed&quot;)).collect(Collectors.toList());</span>
+<span class="nc" id="L169">        List&lt;Property&gt; rentedProperties = rentalTransactionList.stream()</span>
+<span class="nc" id="L170">                .map(RentalTransaction::getProperty).filter(p-&gt;p.getAvailabilityStatus().equals(&quot;Rented&quot;))</span>
+<span class="nc" id="L171">                .collect(Collectors.toList());</span>
+<span class="nc" id="L172">        return entityMapper.propListToPropResponseDtoList(rentedProperties);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

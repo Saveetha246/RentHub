@@ -1,0 +1,130 @@
+.application-section {
+  padding: 2rem;
+
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0;
+    color: #333;
+  }
+}
+
+.application-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.application-card.horizontal {
+  display: flex;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+
+  .property-image {
+    margin-top: 0px;
+    width: 100px;
+    height: 250px;
+    object-fit: cover;
+  }
+
+  .application-info {
+    margin-top: 15px;
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    h3 {
+      
+      font-size: 1rem;
+      color: #222;
+    }
+
+    .location {
+      font-weight: bold;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .location-icon {
+        color: var(--bs-danger);
+      }
+    }
+
+    .description {
+      font-size: 1rem;
+      margin: 4px 0; 
+      color: #666;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 8px;
+      width: fit-content;
+
+      &.accepted {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      &.pending,
+      &.applied {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      &.not-available {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+    }
+
+    .button-group {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+
+      button {
+        padding: 6px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: background-color 0.3s ease;
+
+        &.proceed-btn {
+          background-color: #5dcd4e;
+          color: white;
+          padding-left: 14px;
+          padding-right: 14px;
+
+          &:hover {
+            background-color: #00b327;
+          }
+        }
+
+        &.view-details-btn {
+          background-color: #6c757d;
+          color: white;
+
+          &:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+}

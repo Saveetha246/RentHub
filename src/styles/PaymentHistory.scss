@@ -1,0 +1,276 @@
+
+ 
+$primary-color:teal; 
+$secondary-color: #6c757d; 
+$accent-color: #28a745; 
+$background-light: #f8f9fa; 
+$text-color-dark: #343a40; 
+$text-color-light: #ffffff; 
+ 
+$success-color: #28a745; 
+$failed-color: #dc3545; 
+$pending-color: #ffc107; 
+ 
+$border-color: #dee2e6; 
+$box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05); 
+ 
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+ 
+
+$border-radius: 0.3rem;
+ 
+
+ 
+ 
+
+
+ 
+ 
+.payment-history-container {
+  padding: $spacing-xl; 
+  background-color: $background-light;
+  min-height: calc(100vh - #{$spacing-xl * 2}); 
+  color: $text-color-dark;
+  
+  box-shadow: $box-shadow; 
+  border-radius: $border-radius;
+  margin: $spacing-xl; 
+  max-width: 1200px; 
+  margin-left: auto;
+  margin-right: auto;
+}
+ 
+.page-title {
+  font-size: 2.2rem;
+  color:#1A3E72 ;
+  margin-bottom: $spacing-lg;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm; 
+ 
+  .title-icon {
+    font-size: 2rem;
+  }
+}
+ 
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px; 
+  text-align: center;
+  padding: $spacing-xl;
+  background-color: #fff;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  margin-top: $spacing-lg;
+}
+ 
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid $primary-color;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: $spacing-md;
+}
+ 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+ 
+.error-icon {
+  font-size: 3rem;
+  color: $failed-color;
+  margin-bottom: $spacing-md;
+}
+ 
+.error-message {
+  font-size: 1.2rem;
+  color: $failed-color;
+  font-weight: bold;
+}
+ 
+
+.no-records {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  background-color: #fff;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  margin-top: $spacing-lg;
+  padding: $spacing-xl;
+  text-align: center;
+ 
+  .no-records-icon {
+    font-size: 3.5rem;
+    color: $secondary-color;
+    margin-bottom: $spacing-lg;
+  }
+ 
+  p {
+    font-size: 1.3rem;
+    color: $secondary-color;
+    font-weight: 500;
+  }
+}
+ 
+
+.table-wrapper {
+  overflow-x: auto; 
+  margin-top: $spacing-lg;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow; 
+  background-color: #fff; 
+}
+ 
+.responsive-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff; 
+ 
+  th,
+  td {
+    padding: $spacing-md;
+    text-align: left;
+    border-bottom: 1px solid $border-color; 
+    white-space: nowrap; 
+  }
+ 
+  th {
+    background-color: $primary-color;
+    color: $text-color-light;
+    font-weight: 600;
+    font-size: 1.05rem;
+    position: sticky; 
+    top: 0;
+    z-index: 1; 
+ 
+    .table-icon {
+      margin-right: $spacing-sm;
+    }
+  }
+ 
+  tbody tr:hover {
+    background-color: lighten(grey, 35%); 
+    cursor: pointer; 
+  }
+ 
+  
+  .status-success {
+    color: $success-color;
+    font-weight: bold;
+    .success-icon {
+      margin-right: $spacing-xs;
+      color: $success-color;
+    }
+  }
+ 
+  .status-failed {
+    color: $failed-color;
+    font-weight: bold;
+    .failed-icon {
+      margin-right: $spacing-xs;
+      color: $failed-color;
+    }
+  }
+  
+  .status-pending {
+    color: $pending-color;
+    font-weight: bold;
+    
+  }
+}
+ 
+
+@media (max-width: 768px) {
+  .payment-history-container {
+    padding: $spacing-lg;
+    margin: $spacing-lg $spacing-md; 
+  }
+ 
+  .page-title {
+    font-size: 1.8rem;
+    .title-icon {
+      font-size: 1.6rem;
+    }
+  }
+ 
+  .responsive-table {
+    display: block; 
+    width: 100%; 
+ 
+    thead {
+      display: none; 
+    }
+ 
+    tbody {
+      display: block; 
+    }
+ 
+    tr {
+      display: block; 
+      margin-bottom: $spacing-md;
+      border: 1px solid $border-color;
+      border-radius: $border-radius;
+      box-shadow: $box-shadow;
+      background-color: #fff;
+    }
+ 
+    td {
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      padding: $spacing-sm $spacing-md;
+      border-bottom: 1px dashed lighten($border-color, 10%); 
+      white-space: normal; 
+ 
+      &:last-child {
+        border-bottom: none; 
+      }
+ 
+      
+      &::before {
+        content: attr(data-label); 
+        font-weight: bold;
+        color: $secondary-color;
+        margin-right: $spacing-md;
+      }
+    }
+  }
+}
+ 
+@media (max-width: 480px) {
+  .payment-history-container {
+    padding: $spacing-md;
+    margin: $spacing-md $spacing-sm;
+  }
+ 
+  .page-title {
+    font-size: 1.5rem;
+    .title-icon {
+      font-size: 1.3rem;
+    }
+  }
+ 
+  .no-records {
+    p {
+      font-size: 1rem;
+    }
+  }
+}
+ 

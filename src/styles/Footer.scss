@@ -1,0 +1,114 @@
+@import '../styles/variables.scss';
+
+.footer {
+  background-color: $primary-color;
+  color: $text-color-light;
+  padding: 40px 20px;
+  font-size: 0.9rem;
+  margin-top: auto;
+  font-family: $font;
+  width: auto;
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: auto;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    @media (max-width: $breakpoint-md) {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .section {
+      flex: 1 1 30%;
+      max-width: 350px;
+      padding: 0 10px;
+      margin-bottom: 20px;
+
+      h3, h4 {
+        color: $text-color-light;
+        margin-bottom: 15px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        text-decoration: underline;
+
+        @media (max-width: $breakpoint-md) {
+          justify-content: center;
+        }
+      }
+
+      p, a {
+        display: flex;
+        align-items: center;
+      }
+
+      .iconHouse {
+        margin-right: 10px;
+        color: $color-page-background;
+        font-size: 1.2em;
+        vertical-align: middle;
+      }
+
+      .icon {
+        margin-right: 8px;
+        color: $color-page-background;
+        font-size: 1.1em;
+        vertical-align: middle;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          margin-bottom: 8px;
+        }
+      }
+
+      a {
+        color: $color-page-background;
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: $accent-color;
+        }
+      }
+
+      
+      &:first-child {
+        margin-left: 10px;
+      }
+
+      &:last-child {
+        margin-right: 10px;
+      }
+
+      
+      &.master {
+        margin: 0 auto;
+      }
+    }
+  }
+
+  .footer-logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: inline-block;
+    text-decoration: underline;
+  }
+
+  .copyright {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba($text-color-light, 0.1);
+  }
+}

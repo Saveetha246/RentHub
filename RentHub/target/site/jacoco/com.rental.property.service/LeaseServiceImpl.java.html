@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LeaseServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property.service</a> &gt; <span class="el_source">LeaseServiceImpl.java</span></div><h1>LeaseServiceImpl.java</h1><pre class="source lang-java linenums">
+package com.rental.property.service;
+
+import com.rental.property.dto.LeaseAgreementDTO;
+import com.rental.property.dto.LeaseResponseDTO;
+import com.rental.property.entity.Lease;
+import com.rental.property.entity.Property;
+import com.rental.property.entity.RentalTransaction;
+import com.rental.property.entity.User;
+import com.rental.property.enums.LeaseStatus;
+import com.rental.property.repo.LeaseRepository;
+import com.rental.property.repo.PropertyRepository;
+import com.rental.property.repo.RentalTransactionRepository;
+import com.rental.property.repo.UserRepository;
+import com.rental.property.util.PdfGeneratorUtil;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+<span class="fc" id="L29">@Slf4j</span>
+public class LeaseServiceImpl implements LeaseService {
+
+    private final RentalTransactionRepository rentalTransactionRepository;
+    private final PropertyRepository propertyRepository;
+    private final UserRepository userRepository;
+    private final LeaseRepository leaseRepository;
+
+    @Override
+    public byte[] generateLeasePreview(Long transactionId) {
+<span class="nc" id="L39">        LeaseAgreementDTO data = fetchAgreementData(transactionId);</span>
+
+<span class="nc" id="L41">        return PdfGeneratorUtil.generateLeaseAgreementPdf(data, false);</span>
+    }
+
+    @Override
+    @Transactional
+    public LeaseResponseDTO confirmLeaseAndGetSignedPdf(Long transactionId) {
+<span class="fc" id="L47">        LeaseAgreementDTO data = fetchAgreementData(transactionId);</span>
+
+<span class="fc" id="L49">        Property property = propertyRepository.findById(data.getPropertyId())</span>
+<span class="pc" id="L50">                .orElseThrow(() -&gt; new RuntimeException(&quot;Property not found with ID: &quot; + data.getPropertyId()));</span>
+
+<span class="fc" id="L52">        RentalTransaction rentalTransaction = rentalTransactionRepository.findById(transactionId)</span>
+<span class="pc" id="L53">                .orElseThrow(() -&gt; new RuntimeException(&quot;RentalTransaction not found with ID: &quot; + transactionId));</span>
+
+
+<span class="fc" id="L56">        Optional&lt;Lease&gt; existingLease = leaseRepository.findByRentalTransaction_TransactionId(transactionId);</span>
+        Lease leaseToSave;
+
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (existingLease.isPresent()) {</span>
+<span class="nc" id="L60">            leaseToSave = existingLease.get();</span>
+<span class="nc" id="L61">            log.warn(&quot;Lease already exists for transaction ID {}. Updating status.&quot;, transactionId);</span>
+        } else {
+<span class="fc" id="L63">            leaseToSave = new Lease();</span>
+<span class="fc" id="L64">            leaseToSave.setCreatedAt(LocalDateTime.now());</span>
+<span class="fc" id="L65">            leaseToSave.setProperty(property);</span>
+<span class="fc" id="L66">            leaseToSave.setRentalTransaction(rentalTransaction);</span>
+<span class="fc" id="L67">            property.setAvailabilityStatus(&quot;Rented&quot;);</span>
+<span class="fc" id="L68">            propertyRepository.save(property);</span>
+        }
+
+<span class="fc" id="L71">        leaseToSave.setUpdatedAt(LocalDateTime.now());</span>
+<span class="fc" id="L72">        leaseToSave.setStatus(LeaseStatus.ACTIVE);</span>
+
+<span class="fc" id="L74">        Lease savedLease = leaseRepository.save(leaseToSave);</span>
+
+
+
+<span class="fc" id="L78">        byte[] pdfBytes = PdfGeneratorUtil.generateLeaseAgreementPdf(data, true); // Generate PDF</span>
+
+<span class="fc" id="L80">        String base64Pdf = Base64.getEncoder().encodeToString(pdfBytes);</span>
+
+<span class="fc" id="L82">        return LeaseResponseDTO.builder()</span>
+<span class="fc" id="L83">                .leaseId(savedLease.getLeaseId())</span>
+<span class="fc" id="L84">                .base64PdfContent(base64Pdf)</span>
+<span class="fc" id="L85">                .amount(data.getAmount())</span>
+<span class="fc" id="L86">                .build();</span>
+    }
+
+    private LeaseAgreementDTO fetchAgreementData(Long transactionId) {
+<span class="fc" id="L90">        RentalTransaction transaction = rentalTransactionRepository.findById(transactionId)</span>
+<span class="pc" id="L91">                .orElseThrow(() -&gt; new RuntimeException(&quot;Transaction not found for ID: &quot; + transactionId));</span>
+
+<span class="fc" id="L93">        User tenant = transaction.getUser();</span>
+<span class="fc" id="L94">        Property property = transaction.getProperty();</span>
+<span class="fc" id="L95">        User landlord = property.getUser();</span>
+
+<span class="fc" id="L97">        String propertyAddress = String.format(&quot;%s, %s, %s - %d&quot;,</span>
+<span class="fc" id="L98">                property.getAddress().getStreetName(),</span>
+<span class="fc" id="L99">                property.getAddress().getCity(),</span>
+<span class="fc" id="L100">                property.getAddress().getState(),</span>
+<span class="fc" id="L101">                property.getAddress().getPinCode());</span>
+
+<span class="fc" id="L103">        long durationMonths = ChronoUnit.MONTHS.between(transaction.getStartDate(), transaction.getEndDate());</span>
+
+<span class="fc" id="L105">        return LeaseAgreementDTO.builder()</span>
+<span class="fc" id="L106">                .tenantName(tenant.getFirstName() + &quot; &quot; + tenant.getLastName())</span>
+<span class="fc" id="L107">                .landlordName(landlord.getFirstName() + &quot; &quot; + landlord.getLastName())</span>
+<span class="fc" id="L108">                .propertyAddress(propertyAddress)</span>
+<span class="fc" id="L109">                .startDate(transaction.getStartDate())</span>
+<span class="fc" id="L110">                .endDate(transaction.getEndDate())</span>
+<span class="fc" id="L111">                .durationInMonths(durationMonths)</span>
+<span class="fc" id="L112">                .amount(property.getRentAmount())</span>
+<span class="fc" id="L113">                .propertyId(property.getPropertyId())</span>
+<span class="fc" id="L114">                .createdAt(LocalDateTime.now())</span>
+<span class="fc" id="L115">                .transactionId(transactionId)</span>
+<span class="fc" id="L116">                .build();</span>
+    }
+
+    @Override
+    @Transactional
+    public byte[] renewLease(Long newTransactionId) {
+<span class="nc" id="L122">        LeaseAgreementDTO data = fetchAgreementData(newTransactionId);</span>
+
+<span class="nc" id="L124">        return PdfGeneratorUtil.generateLeaseAgreementPdf(data, true);</span>
+    }
+
+    @Override
+    public String terminateLease(Long propertyId) {
+<span class="fc" id="L129">        Optional&lt;Lease&gt; optionalLease = leaseRepository.findByProperty_PropertyIdAndStatus(propertyId, LeaseStatus.ACTIVE);</span>
+<span class="fc" id="L130">        Property property = propertyRepository.findById(propertyId)</span>
+<span class="pc" id="L131">                .orElseThrow(() -&gt; new RuntimeException(&quot;Property not found with ID: &quot; + propertyId));</span>
+
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (optionalLease.isPresent()) {</span>
+<span class="fc" id="L134">            Lease lease = optionalLease.get();</span>
+<span class="fc" id="L135">            lease.setStatus(LeaseStatus.TERMINATED);</span>
+<span class="fc" id="L136">            lease.getRentalTransaction().setStatus(&quot;TERMINATED&quot;);</span>
+<span class="fc" id="L137">            property.setAvailabilityStatus(&quot;Available&quot;);</span>
+<span class="fc" id="L138">            lease.setUpdatedAt(LocalDateTime.now());</span>
+<span class="fc" id="L139">            leaseRepository.save(lease);</span>
+<span class="fc" id="L140">            propertyRepository.save(property);</span>
+<span class="fc" id="L141">            return &quot;Lease terminated successfully&quot;;</span>
+        } else {
+<span class="fc" id="L143">            return &quot;No active lease found for property ID: &quot; + propertyId;</span>
+        }
+    }
+
+    @Override
+    public List&lt;LeaseAgreementDTO&gt; getAllActiveLeasesByTenantId(Long tenantId) {
+<span class="nc" id="L149">        log.info(&quot;Fetching all active leases for tenant ID: {}&quot;, tenantId);</span>
+<span class="nc" id="L150">        return leaseRepository.findActiveLeaseDetailsByTenantId(tenantId, LeaseStatus.ACTIVE);</span>
+    }
+
+    @Override
+    public Optional&lt;LeaseAgreementDTO&gt; getActiveLeaseDetailsByProperty(Long propertyId) {
+<span class="fc" id="L155">        log.info(&quot;Fetching active lease details for property ID: {}&quot;, propertyId);</span>
+<span class="fc" id="L156">        return leaseRepository.findActiveLeaseDetailsByPropertyId(propertyId, LeaseStatus.ACTIVE);</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

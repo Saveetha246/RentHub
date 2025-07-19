@@ -1,0 +1,85 @@
+.property-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: #fff;
+  margin-bottom: 20px;
+
+  .property-label {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff7d00;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: 600;
+    z-index: 1;
+  }
+
+  .property-image {
+    width: 100%;
+    height: 100%;
+    max-width: fit-content;
+    object-fit: cover;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .property-price {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #1a3e72;
+    padding: 1px 15px;
+    padding-bottom: 5px;
+
+    span {
+      font-size: 0.6em;
+      font-weight: 400;
+      color: #666;
+    }
+  }
+
+  .property-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #333;
+    padding: 30px 15px 0px;
+  }
+
+  .property-location {
+    font-size: 1em;
+    color: #777;
+    padding: 15px 15px;
+    display: flex;
+    align-items: center;
+
+    .location-icon {
+      margin-right: 6px;
+      color: #777;
+    }
+  }
+
+  .property-button {
+    margin-top: 12px;
+    padding: 10px 16px;
+    background-color: #00b4a6;
+    color: #fff;
+    border: none;
+    border-radius: 0 0 6px 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+    width: 100%;
+    align-self: flex-end;
+
+    &:hover {
+      background-color: #016c63;
+    }
+  }
+}

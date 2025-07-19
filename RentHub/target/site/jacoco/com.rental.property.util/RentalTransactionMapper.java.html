@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RentalTransactionMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property.util</a> &gt; <span class="el_source">RentalTransactionMapper.java</span></div><h1>RentalTransactionMapper.java</h1><pre class="source lang-java linenums">package com.rental.property.util;
+import com.rental.property.dto.RentalTransactionDto;
+import com.rental.property.dto.RentalTransactionResponseDto;
+import com.rental.property.dto.RentalTransactionTenantResponse;
+import com.rental.property.entity.Property;
+import com.rental.property.entity.RentalTransaction;
+import org.springframework.stereotype.Component;
+import java.util.List;
+import java.util.stream.Collectors;
+@Component
+<span class="fc" id="L11">public class RentalTransactionMapper {</span>
+    public static RentalTransactionDto toDTO(RentalTransaction rentalTransaction) {
+<span class="fc" id="L13">        return RentalTransactionDto.builder()</span>
+<span class="fc" id="L14">                .startDate(rentalTransaction.getStartDate())</span>
+<span class="fc" id="L15">                .endDate(rentalTransaction.getEndDate())</span>
+<span class="fc" id="L16">                .build();</span>
+    }
+    public static RentalTransaction toEntity(RentalTransactionDto dto) {
+<span class="fc" id="L19">        Property property = new Property();</span>
+<span class="fc" id="L20">        return RentalTransaction.builder()</span>
+<span class="fc" id="L21">                .startDate(dto.getStartDate())</span>
+<span class="fc" id="L22">                .endDate(dto.getEndDate())</span>
+<span class="fc" id="L23">                .property(property)</span>
+<span class="fc" id="L24">                .build();</span>
+    }
+    public static List&lt;RentalTransactionDto&gt; tenantListToTenantDtoList(List&lt;RentalTransaction&gt; rentalTransactionList){
+<span class="fc" id="L27">        List&lt;RentalTransactionDto&gt; rentalTransactionDtoList = rentalTransactionList.stream().map(t-&gt;toDTO(t)).collect(Collectors.toList());</span>
+<span class="fc" id="L28">        return rentalTransactionDtoList;</span>
+    }
+    public  static  List&lt;RentalTransaction&gt; tenantDtoListToTenantList(List&lt;RentalTransactionDto&gt; rentalTransactionDtoList){
+<span class="fc" id="L31">        List&lt;RentalTransaction&gt; rentalTransactionList = rentalTransactionDtoList.stream().map(m-&gt;toEntity(m)).collect(Collectors.toList());</span>
+<span class="fc" id="L32">        return rentalTransactionList;</span>
+    }
+    public static List&lt;RentalTransactionResponseDto&gt; convertToResponseDtoList(List&lt;RentalTransaction&gt; transactions) {
+<span class="fc" id="L35">        return transactions.stream()</span>
+<span class="fc" id="L36">                .map(r-&gt;convertToResponseDto(r))</span>
+<span class="fc" id="L37">                .collect(Collectors.toList());</span>
+    }
+    public static  RentalTransactionResponseDto convertToResponseDto(RentalTransaction transaction) {
+<span class="fc" id="L40">        return RentalTransactionResponseDto.builder()</span>
+<span class="fc" id="L41">                .transactionId(transaction.getTransactionId())</span>
+<span class="fc" id="L42">                .propertyId(transaction.getProperty().getPropertyId())</span>
+<span class="fc" id="L43">                .address(transaction.getProperty().getAddress().getStreetName() + &quot;, &quot; + // Improved address formatting</span>
+<span class="fc" id="L44">                        transaction.getProperty().getAddress().getCity() + &quot;, &quot; +</span>
+<span class="fc" id="L45">                        transaction.getProperty().getAddress().getState() + &quot; &quot; +</span>
+<span class="fc" id="L46">                        transaction.getProperty().getAddress().getPinCode())</span>
+<span class="fc" id="L47">                .bhk(transaction.getProperty().getBhk())</span>
+<span class="fc" id="L48">                .status(transaction.getStatus())</span>
+<span class="fc" id="L49">                .startDate(transaction.getStartDate())</span>
+<span class="fc" id="L50">                .endDate(transaction.getEndDate()).image(transaction.getProperty().getImage1())</span>
+<span class="fc" id="L51">                .userName(transaction.getUser().getUsername()) // added username</span>
+<span class="fc" id="L52">                .mobileNo(String.valueOf(transaction.getUser().getMobileNo()))  // added mobile number</span>
+<span class="fc" id="L53">                .build();</span>
+    }
+    public static List&lt;RentalTransactionTenantResponse&gt; convertToTenantResponseList(List&lt;RentalTransaction&gt; transactions) {
+<span class="fc" id="L56">        return transactions.stream()</span>
+<span class="fc" id="L57">                .map(r-&gt;convertToTenantResponse(r))</span>
+<span class="fc" id="L58">                .collect(Collectors.toList());</span>
+    }
+    public static  RentalTransactionTenantResponse convertToTenantResponse(RentalTransaction transaction) {
+<span class="fc" id="L61">        return RentalTransactionTenantResponse.builder()</span>
+<span class="fc" id="L62">                .propertyId(transaction.getProperty().getPropertyId())</span>
+<span class="fc" id="L63">                .transactionId(transaction.getTransactionId())</span>
+<span class="fc" id="L64">                .address(transaction.getProperty().getAddress().getStreetName() + &quot;, &quot; + // Improved address formatting</span>
+<span class="fc" id="L65">                        transaction.getProperty().getAddress().getCity() + &quot;, &quot; +</span>
+<span class="fc" id="L66">                        transaction.getProperty().getAddress().getState() + &quot; &quot; +</span>
+<span class="fc" id="L67">                        transaction.getProperty().getAddress().getPinCode())</span>
+<span class="fc" id="L68">                .bhk(transaction.getProperty().getBhk())</span>
+<span class="fc" id="L69">                .description(transaction.getProperty().getDescription())</span>
+<span class="fc" id="L70">                .status(transaction.getStatus())</span>
+<span class="fc" id="L71">                .image(transaction.getProperty().getImage1())</span>
+<span class="fc" id="L72">                .build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

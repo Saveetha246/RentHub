@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RentHubApplication.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property</a> &gt; <span class="el_source">RentHubApplication.java</span></div><h1>RentHubApplication.java</h1><pre class="source lang-java linenums">package com.rental.property;
+import com.rental.property.entity.Role;
+import com.rental.property.entity.User;
+import com.rental.property.repo.RoleRepository;
+import com.rental.property.repo.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.Set;
+@SpringBootApplication
+<span class="fc" id="L14">@Slf4j</span>
+@RequiredArgsConstructor
+public class RentHubApplication implements CommandLineRunner {
+    private  final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    public static void main(String[] args) {
+<span class="nc" id="L21">        SpringApplication.run(RentHubApplication.class, args);</span>
+<span class="nc" id="L22">        log.info(&quot;After running  my app&quot;);</span>
+<span class="nc" id="L23">    }</span>
+    @Override
+    public void run(String... args) throws Exception {
+<span class="fc" id="L26">        Role adminRole = roleRepository.findByName(&quot;ROLE_LANDLORD&quot;)</span>
+<span class="fc" id="L27">                .orElseGet(() -&gt; {</span>
+<span class="fc" id="L28">                    Role newRole = new Role();</span>
+<span class="fc" id="L29">                    newRole.setName(&quot;ROLE_LANDLORD&quot;);</span>
+<span class="fc" id="L30">                    return roleRepository.save(newRole);</span>
+                });
+<span class="fc" id="L32">        Role userRole = roleRepository.findByName(&quot;ROLE_TENANT&quot;)</span>
+<span class="fc" id="L33">                .orElseGet(() -&gt; {</span>
+<span class="fc" id="L34">                    Role newRole = new Role();</span>
+<span class="fc" id="L35">                    newRole.setName(&quot;ROLE_TENANT&quot;);</span>
+<span class="fc" id="L36">                    return roleRepository.save(newRole);</span>
+                });
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if (!userRepository.findByUsername(&quot;landlord&quot;).isPresent()) {</span>
+<span class="fc" id="L39">            User landlord = new User();</span>
+<span class="fc" id="L40">            landlord.setUsername(&quot;landlord&quot;);</span>
+<span class="fc" id="L41">            landlord.setPassword(passwordEncoder.encode(&quot;landlord123&quot;));</span>
+<span class="fc" id="L42">            landlord.setRoles(Set.of(adminRole));</span>
+<span class="fc" id="L43">            landlord.setEmail(&quot;Saveetha.S@cognizant.com&quot;);</span>
+<span class="fc" id="L44">            landlord.setFirstName(&quot;SAVEETHA&quot;);</span>
+<span class="fc" id="L45">            landlord.setLastName(&quot;S&quot;);</span>
+<span class="fc" id="L46">            landlord.setMobileNo(876534567L);</span>
+<span class="fc" id="L47">            landlord.setRole(1L);</span>
+<span class="fc" id="L48">            userRepository.save(landlord);</span>
+        }
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (!userRepository.findByUsername(&quot;tenant&quot;).isPresent()) {</span>
+<span class="fc" id="L51">            User tenant = new User();</span>
+<span class="fc" id="L52">            tenant.setUsername(&quot;tenant&quot;);</span>
+<span class="fc" id="L53">            tenant.setPassword(passwordEncoder.encode(&quot;tenant123&quot;));</span>
+<span class="fc" id="L54">            tenant.setRoles(Set.of(userRole));</span>
+<span class="fc" id="L55">            tenant.setEmail(&quot;Ragul.M5@cognizant.com&quot;);</span>
+<span class="fc" id="L56">            tenant.setFirstName(&quot;RAGUL&quot;);</span>
+<span class="fc" id="L57">            tenant.setLastName(&quot;M&quot;);</span>
+<span class="fc" id="L58">            tenant.setMobileNo(987654321L);</span>
+<span class="fc" id="L59">            tenant.setRole(2L);</span>
+<span class="fc" id="L60">            userRepository.save(tenant);</span>
+        }
+<span class="fc" id="L62">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

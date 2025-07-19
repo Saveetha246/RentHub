@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MaintenanceMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property.util</a> &gt; <span class="el_source">MaintenanceMapper.java</span></div><h1>MaintenanceMapper.java</h1><pre class="source lang-java linenums">
+package com.rental.property.util;
+
+import com.rental.property.dto.MaintenanceDTO;
+import com.rental.property.dto.MaintenanceRequestDTO;
+import com.rental.property.entity.Maintenance;
+import com.rental.property.entity.Property;
+import com.rental.property.entity.User; // Import User entity
+import com.rental.property.enums.MaintenanceRequestStatus;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="fc" id="L13">public class MaintenanceMapper {</span>
+
+    public MaintenanceDTO toDto(Maintenance entity) {
+<span class="fc" id="L16">        MaintenanceDTO dto = new MaintenanceDTO();</span>
+<span class="fc" id="L17">        dto.setRequestId(entity.getRequestId());</span>
+<span class="pc bpc" id="L18" title="1 of 2 branches missed.">        if (entity.getTenant() != null) {</span>
+<span class="fc" id="L19">            dto.setTenantId(entity.getTenant().getId());</span>
+        }
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        if (entity.getProperty() != null) {</span>
+<span class="fc" id="L22">            dto.setPropertyId(entity.getProperty().getPropertyId());</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">            if (entity.getProperty().getUser() != null) { // Assuming User is the landlord for the property</span>
+<span class="fc" id="L24">                dto.setLandlordId(entity.getProperty().getUser().getId());</span>
+            }
+        }
+<span class="fc" id="L27">        dto.setIssueType(entity.getIssueType());</span>
+<span class="fc" id="L28">        dto.setAddress(entity.getProperty().getAddress());</span>
+<span class="fc" id="L29">        dto.setBhk(entity.getProperty().getBhk());</span>
+<span class="fc" id="L30">        dto.setPropertyType(entity.getProperty().getPropertyType());</span>
+<span class="fc" id="L31">        dto.setIssueDescription(entity.getIssueDescription());</span>
+<span class="fc" id="L32">        dto.setStatus(entity.getStatus().name());</span>
+<span class="fc" id="L33">        return dto;</span>
+    }
+
+    public MaintenanceRequestDTO toRequestDto(Maintenance entity) {
+<span class="fc" id="L37">        MaintenanceRequestDTO dto = new MaintenanceRequestDTO();</span>
+<span class="fc" id="L38">        dto.setIssueType(entity.getIssueType());</span>
+<span class="fc" id="L39">        dto.setIssueDescription(entity.getIssueDescription());</span>
+        // For a request DTO, you might also include propertyId and tenantId if needed
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (entity.getProperty() != null) {</span>
+<span class="fc" id="L42">            dto.setPropertyId(entity.getProperty().getPropertyId());</span>
+        }
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (entity.getTenant() != null) {</span>
+<span class="fc" id="L45">            dto.setTenantId(entity.getTenant().getId());</span>
+        }
+        // Status is usually set by the backend, not part of the initial request DTO for creation
+<span class="fc" id="L48">        return dto;</span>
+    }
+
+    // Modified to accept User (tenant) and Property entities for creation
+    public Maintenance toEntity(MaintenanceRequestDTO dto, User tenant, Property property) {
+<span class="fc" id="L53">        Maintenance entity = new Maintenance();</span>
+        // entity.setRentalTransaction(rentalTransaction); // Leave null or fetch if relevant
+<span class="fc" id="L55">        entity.setTenant(tenant); // Set the tenant entity</span>
+<span class="fc" id="L56">        entity.setProperty(property); // Set the property entity</span>
+<span class="fc" id="L57">        entity.setIssueType(dto.getIssueType());</span>
+<span class="fc" id="L58">        entity.setIssueDescription(dto.getIssueDescription());</span>
+<span class="fc" id="L59">        entity.setStatus(MaintenanceRequestStatus.OPEN); // Default status for new requests</span>
+<span class="fc" id="L60">        return entity;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

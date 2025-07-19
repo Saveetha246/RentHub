@@ -1,0 +1,148 @@
+
+@import '../styles/mixins';
+@import '../styles/variables';
+
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md $spacing-xl; 
+  background-color: $primary-color; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  font-family: $font; 
+
+  .logoContainer {
+    .logoLink {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: $text-color-light; 
+
+      .houseIcon {
+        font-size: 1.8rem;
+        margin-right: $spacing-sm; 
+        color: $text-color-light; 
+      }
+
+      .logoText {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .navLinks {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+
+    li {
+      margin-left: $spacing-lg; 
+
+      a, .iconButton, .dropdownToggle {
+        color: $text-color-light; 
+        text-decoration: none;
+        font-weight: 500;
+        padding: $spacing-sm $spacing-md; 
+        border-radius: $border-radius; 
+        transition: background-color 0.2s ease;
+        display: flex;
+        align-items: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+          background-color: $hover-color; 
+        }
+      }
+
+      .addProperty {
+        background-color: $accent-color; 
+        color: $text-color-light; 
+        .addIcon {
+          margin-right: $spacing-sm; 
+        }
+        &:hover {
+          background-color: darken($accent-color, 10%); 
+        }
+      }
+
+      .iconButton {
+        font-size: 1.2rem;
+        padding: $spacing-sm; 
+      }
+
+      .dropdown {
+        position: relative;
+
+        .dropdownToggle {
+          display: flex;
+          align-items: center;
+        }
+
+        .profileIcon {
+          font-size: 1.5rem;
+          margin-right: 5px; 
+        }
+
+        .dropdownIcon {
+          transition: transform 0.2s ease;
+          &.rotate {
+            transform: rotate(180deg);
+          }
+        }
+
+        .dropdownMenu {
+          position: absolute;
+          top: calc(100% + $spacing-md); 
+          right: 0;
+          background-color: $secondary-color; 
+          border: 1px solid $color-muted-blue; 
+          border-radius: $border-radius; 
+          list-style: none;
+          padding: $spacing-sm 0; 
+          margin: 0;
+          min-width: 150px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          z-index: 10;
+
+          li {
+            margin: 0;
+            a, button {
+              padding: 0.8rem $spacing-lg; 
+              display: block;
+              color: $text-color-light; 
+              text-decoration: none;
+              text-align: left;
+              width: 100%;
+              border-bottom: 1px solid $color-muted-blue; 
+
+              &:hover {
+                background-color: $dropdown-item-hover; 
+              }
+            }
+            &:last-child button {
+                border-bottom: none;
+            }
+          }
+        }
+      }
+      
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: $spacing-md; 
+    .navLinks {
+      .addProperty, .iconButton, .dropdown {
+        
+        
+      }
+    }
+  }
+}

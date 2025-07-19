@@ -1,0 +1,61 @@
+
+
+
+
+.inline-confirmation-box {
+    background-color: #fffde7; 
+    border: 1px solid #ff7d00; 
+    border-radius: 8px;
+    padding: 20px;
+    margin: 25px auto;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    max-width: 600px;
+    
+    p {
+        font-size: 1.15em;
+        color: #2d3748;
+        margin-bottom: 20px;
+        line-height: 1.4;
+        strong {
+            color: #ff7d00; 
+        }
+    }
+
+    .inline-confirmation-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+
+        .confirm-button,
+        .cancel-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+            &:hover {
+                transform: translateY(-1px);
+            }
+        }
+
+        .confirm-button {
+            background-color: #ff7d00; 
+            color: white;
+            &:hover {
+                background-color: #e67000; 
+            }
+        }
+
+        .cancel-button {
+            background-color: #2d3748; 
+            color: white;
+            &:hover {
+                background-color: #1a202c; 
+            }
+        }
+    }
+}

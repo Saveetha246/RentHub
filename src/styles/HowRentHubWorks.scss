@@ -1,0 +1,99 @@
+$color1: #1A3E72; 
+$color2: #3D52A0; 
+$color3: #7091E6; 
+$color4: #8697C4; 
+$color5: #20B2AA; 
+$color6: #EDE8F5; 
+ 
+$font: 'Poppins','Roboto',sans-serif;
+ 
+.how-it-works-card {
+  font-family: $font;
+  background-color: white; 
+  color: $color1; 
+  padding: 50px 60px; 
+  border-radius: 0px; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+  text-align: center;
+  margin: 0px auto  ; 
+  margin-left: auto;
+  margin-right: auto;
+ 
+  .title {
+    font-size: 28px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: $color1; 
+  }
+ 
+  .subtitle {
+    font-size: 16px;
+    color: $color1; 
+    margin-bottom: 40px; 
+  }
+ 
+  .steps-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 20px;
+ 
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+ 
+  .step-card {
+    background-color :#edf2fa; 
+    color: $color1; 
+    padding: 35px 20px; 
+    border-radius: 15px; 
+    text-align: center;
+    width: calc(30% - 20px); 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease-in-out;
+ 
+    &:hover {
+      transform: translateY(-5px);
+    }
+ 
+    @media (max-width: 768px) {
+      width: 80%;
+      margin-bottom: 15px;
+    }
+ 
+    .number-circle-card {
+      font-size: 24px;
+      font-weight: bold;
+      color: $color1; 
+      background-color: $color5; 
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+ 
+    .description-card {
+      .step-title {
+        font-size: 20px;
+        margin-bottom: 8px;
+        font-weight: 700;
+        color: $color1; 
+      }
+ 
+      .step-text {
+        font-size: 15px;
+        font-weight: 550;
+        color: $color1; 
+        margin: 0;
+      }
+    }
+  }
+}

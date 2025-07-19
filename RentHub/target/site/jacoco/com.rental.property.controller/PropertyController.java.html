@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PropertyController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property.controller</a> &gt; <span class="el_source">PropertyController.java</span></div><h1>PropertyController.java</h1><pre class="source lang-java linenums">package com.rental.property.controller;
+import com.rental.property.dto.PropertyRequestDto;
+import com.rental.property.dto.PropertyResponseDto;
+import com.rental.property.dto.RentalTransactionResponseDto;
+import com.rental.property.exception.PropertyNotFoundException;
+import com.rental.property.service.PropertyService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.util.List;
+@RequiredArgsConstructor
+@RestController
+<span class="fc" id="L19">@Slf4j</span>
+@RequestMapping(&quot;/api/v1/landlord/properties&quot;)
+public class PropertyController {
+    private final PropertyService propertyService;
+    @PostMapping
+    public ResponseEntity&lt;PropertyResponseDto&gt; addNewProperty(@Valid @RequestPart PropertyRequestDto propertyRequestDto,
+                                                              @RequestPart MultipartFile image) throws IOException {
+<span class="fc" id="L26">        log.info(&quot;Adding new property: {}&quot;, propertyRequestDto);</span>
+<span class="fc" id="L27">        return new ResponseEntity&lt;&gt;(propertyService.addNewProperty(propertyRequestDto, image), HttpStatus.OK);</span>
+    }
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;List&lt;PropertyResponseDto&gt;&gt; getAllPropertyByLandLordId(@PathVariable Long id,
+                                                                                Pageable pageable) {
+<span class="fc" id="L32">        log.info(&quot;Fetching all properties for owner ID: {}&quot;, id);</span>
+<span class="fc" id="L33">        return new ResponseEntity&lt;&gt;(propertyService.getAllPropertyByLandLordId(id, pageable), HttpStatus.OK);</span>
+    }
+    @GetMapping(&quot;/viewProperty/{propertyId}&quot;)
+    public ResponseEntity&lt;PropertyResponseDto&gt; getPropertyById(@PathVariable Long propertyId) {
+<span class="fc" id="L37">        log.info(&quot;Fetching property details for property ID: {}&quot;, propertyId);</span>
+<span class="fc" id="L38">        return new ResponseEntity&lt;&gt;(propertyService.getPropertyById(propertyId), HttpStatus.OK);</span>
+    }
+    @PutMapping(&quot;/{propertyId}&quot;)
+    public ResponseEntity&lt;PropertyResponseDto&gt; updateProperty(@PathVariable(&quot;propertyId&quot;) Long propertyId,
+                                                              @Valid @RequestBody PropertyRequestDto propertyResponseDto) {
+<span class="fc" id="L43">        log.info(&quot;Updating property ID: {} with details: {}&quot;, propertyId, propertyResponseDto);</span>
+<span class="fc" id="L44">        PropertyResponseDto propertyResponseDto1 = propertyService.updateProperty(propertyId, propertyResponseDto);</span>
+<span class="fc" id="L45">        return new ResponseEntity&lt;&gt;(propertyResponseDto1, HttpStatus.OK);</span>
+    }
+    @DeleteMapping(&quot;/{propertyId}&quot;)
+    public ResponseEntity&lt;?&gt; deleteProperty(@PathVariable(&quot;propertyId&quot;) Long propertyId) {
+<span class="fc" id="L49">        log.info(&quot;Deleting property with ID: {}&quot;, propertyId);</span>
+        try {
+<span class="fc" id="L51">            propertyService.deleteProperty(propertyId);</span>
+<span class="fc" id="L52">            return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</span>
+<span class="fc" id="L53">        } catch (PropertyNotFoundException e) {</span>
+<span class="fc" id="L54">            return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</span>
+        }
+    }
+    @PatchMapping(&quot;/updateStatus/{tenantId}/{status}&quot;)
+    public ResponseEntity&lt;?&gt; acceptApplication(@PathVariable Long tenantId, @PathVariable String status) {
+<span class="fc" id="L59">        propertyService.updateApplicationStatus(tenantId, status);</span>
+<span class="fc" id="L60">        return new ResponseEntity&lt;&gt;(HttpStatus.OK);</span>
+    }
+    @GetMapping(&quot;/transactions/{propertyId}&quot;)
+    public ResponseEntity&lt;List&lt;RentalTransactionResponseDto&gt;&gt; getAllTenantTransactions(@PathVariable Long propertyId) {
+<span class="fc" id="L64">        List&lt;RentalTransactionResponseDto&gt; transactionList = propertyService.getAllTenantTransactions(propertyId);</span>
+<span class="fc" id="L65">        return new ResponseEntity&lt;&gt;(transactionList, HttpStatus.OK);</span>
+    }
+    @GetMapping(&quot;/transaction/{landlordId}&quot;)
+    public ResponseEntity&lt;List&lt;RentalTransactionResponseDto&gt;&gt; getAllTenantTransactionsByLandLordId(@PathVariable Long landlordId){
+<span class="fc" id="L69">        List&lt;RentalTransactionResponseDto&gt; transactionList=propertyService.getAllTenantTransactionsByLandLordId(landlordId);</span>
+<span class="fc" id="L70">        return new ResponseEntity&lt;&gt;(transactionList,HttpStatus.OK);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

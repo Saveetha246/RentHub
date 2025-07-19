@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RentalTransactionController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property.controller</a> &gt; <span class="el_source">RentalTransactionController.java</span></div><h1>RentalTransactionController.java</h1><pre class="source lang-java linenums">package com.rental.property.controller;
+import com.rental.property.dto.PropertyResponseDto;
+import com.rental.property.dto.RentalTransactionDto;
+import com.rental.property.dto.RentalTransactionTenantResponse;
+import com.rental.property.entity.Property;
+import com.rental.property.service.PropertyService;
+import com.rental.property.service.RentalTransactionService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+<span class="fc" id="L16">@Slf4j</span>
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(&quot;/api/v1/tenant&quot;)
+public class RentalTransactionController {
+    private final RentalTransactionService rentalTransactionService;
+    private final PropertyService propertyService;
+    @GetMapping(&quot;/viewProperties/&quot;)
+    public List&lt;PropertyResponseDto&gt; getAllProperty(){
+<span class="fc" id="L25">        log.info(&quot;Fetching all properties&quot;);</span>
+<span class="fc" id="L26">        return rentalTransactionService.getAllProperty();</span>
+    }
+    @GetMapping(&quot;/search&quot;)
+    public List&lt;PropertyResponseDto&gt; searchProperties(
+            @RequestParam(required=false) String city,
+            @RequestParam(required=false) String minPrice,
+            @RequestParam(required=false) String maxPrice,
+            @RequestParam(required=false) String bhk){
+<span class="fc" id="L34">        log.info(&quot;Searching properties with city: {}, minPrice: {}, maxPrice: {}, bhk: {}&quot;, city, minPrice, maxPrice, bhk);</span>
+<span class="fc" id="L35">        return rentalTransactionService.searchProperties(city,minPrice,maxPrice,bhk);</span>
+    }
+
+    @GetMapping(&quot;/viewProperty/{propertyId}&quot;)
+    public ResponseEntity&lt;PropertyResponseDto&gt; getPropertyById(@PathVariable Long propertyId) {
+<span class="fc" id="L40">        log.info(&quot;Fetching property details for property ID: {}&quot;, propertyId);</span>
+<span class="fc" id="L41">        return new ResponseEntity&lt;&gt;(propertyService.getPropertyById(propertyId), HttpStatus.OK);</span>
+    }
+    @PostMapping(&quot;/{userId}/{property_id}/apply&quot;)
+    public RentalTransactionDto applyForProperty(
+            @PathVariable(&quot;property_id&quot;) Long propertyId,
+            @RequestBody RentalTransactionDto rentalTransactionDto,@PathVariable(&quot;userId&quot;) Long userId) {
+<span class="fc" id="L47">        return rentalTransactionService.applyForProperty(propertyId, rentalTransactionDto,userId);</span>
+    }
+    @GetMapping(&quot;/ApplicationStatus/{userId}&quot;)
+    public ResponseEntity&lt;List&lt;RentalTransactionTenantResponse&gt;&gt; viewApplicationStatus(@PathVariable Long userId){
+<span class="fc" id="L51">        List&lt;RentalTransactionTenantResponse&gt; rentalTransactionTenantResponseList=</span>
+<span class="fc" id="L52">                rentalTransactionService.viewApplicationStatus(userId);</span>
+<span class="fc" id="L53">        return new  ResponseEntity&lt;&gt;(rentalTransactionTenantResponseList,HttpStatus.OK);</span>
+    }
+
+    @GetMapping(&quot;/MyRentals/{id}&quot;)
+    public ResponseEntity&lt;List&lt;PropertyResponseDto&gt;&gt; getAllPropertyById(@PathVariable Long id
+                                                                               ) {
+<span class="fc" id="L59">        log.info(&quot;Fetching all properties for owner ID: {}&quot;, id);</span>
+<span class="fc" id="L60">        return new ResponseEntity&lt;&gt;(propertyService.getAllPropertyById(id), HttpStatus.OK);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

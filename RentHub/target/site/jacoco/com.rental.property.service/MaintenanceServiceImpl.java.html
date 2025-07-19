@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MaintenanceServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property.service</a> &gt; <span class="el_source">MaintenanceServiceImpl.java</span></div><h1>MaintenanceServiceImpl.java</h1><pre class="source lang-java linenums">
+package com.rental.property.service;
+
+import com.rental.property.dto.MaintenanceDTO;
+import com.rental.property.dto.MaintenanceRequestDTO;
+import com.rental.property.entity.Maintenance;
+import com.rental.property.entity.Property;
+import com.rental.property.entity.User;
+import com.rental.property.enums.MaintenanceRequestStatus;
+import com.rental.property.repo.MaintenanceRepository;
+import com.rental.property.repo.PropertyRepository;
+import com.rental.property.repo.UserRepository;
+import com.rental.property.util.MaintenanceMapper;
+import jakarta.transaction.Transactional;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+
+import com.rental.property.exception.ResourceNotFoundException;
+
+@Service
+@RequiredArgsConstructor
+@Data
+@Transactional
+public class MaintenanceServiceImpl implements MaintenanceService {
+
+    private final MaintenanceRepository maintenanceRepository;
+    private final PropertyRepository propertyRepository;
+    private final UserRepository userRepository;
+    private final MaintenanceMapper mapper;
+
+
+
+    @Override
+    public MaintenanceRequestDTO createRequest(MaintenanceRequestDTO dto) {
+<span class="fc" id="L40">        Long tenantId = dto.getTenantId();</span>
+<span class="fc" id="L41">        Long propertyId = dto.getPropertyId();</span>
+
+
+<span class="fc" id="L44">        User tenant = userRepository.findById(tenantId)</span>
+<span class="fc" id="L45">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Tenant (User) not found with ID: &quot; + tenantId));</span>
+
+
+<span class="fc" id="L48">        Property property = propertyRepository.findById(propertyId)</span>
+<span class="fc" id="L49">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Property not found with ID: &quot; + propertyId));</span>
+
+<span class="fc" id="L51">        Maintenance maintenance = new Maintenance();</span>
+
+<span class="fc" id="L53">        maintenance.setTenant(tenant);</span>
+<span class="fc" id="L54">        maintenance.setProperty(property);</span>
+<span class="fc" id="L55">        maintenance.setIssueType(dto.getIssueType());</span>
+<span class="fc" id="L56">        maintenance.setIssueDescription(dto.getIssueDescription());</span>
+<span class="fc" id="L57">        maintenance.setStatus(MaintenanceRequestStatus.OPEN);</span>
+
+
+<span class="fc" id="L60">        Maintenance saved = maintenanceRepository.save(maintenance);</span>
+
+
+<span class="fc" id="L63">        return mapper.toRequestDto(saved);</span>
+    }
+
+    @Override
+    public List&lt;MaintenanceDTO&gt; getAllByLandlord(Long landlordId) {
+
+<span class="fc" id="L69">        return maintenanceRepository.findByProperty_User_Id(landlordId)</span>
+<span class="fc" id="L70">                .stream()</span>
+<span class="fc" id="L71">                .map(mapper::toDto)</span>
+<span class="fc" id="L72">                .collect(Collectors.toList());</span>
+    }
+
+
+    @Override
+    public MaintenanceDTO updateStatus(Long requestId, String status) {
+<span class="fc" id="L78">        Maintenance req = maintenanceRepository.findById(requestId)</span>
+<span class="fc" id="L79">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Maintenance request not found with ID: &quot; + requestId)); // Use custom exception</span>
+        try {
+<span class="fc" id="L81">            req.setStatus(MaintenanceRequestStatus.valueOf(status.toUpperCase()));</span>
+<span class="fc" id="L82">            return mapper.toDto(maintenanceRepository.save(req));</span>
+<span class="fc" id="L83">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L84">            throw new IllegalArgumentException(&quot;Invalid status provided: &quot; + status, e);</span>
+        }
+    }
+
+    @Override
+    public List&lt;MaintenanceDTO&gt; getAllByTenant(Long tenantId) {
+
+<span class="fc" id="L91">        return maintenanceRepository.findByTenant_Id(tenantId)</span>
+<span class="fc" id="L92">                .stream()</span>
+<span class="fc" id="L93">                .map(mapper::toDto)</span>
+<span class="fc" id="L94">                .collect(Collectors.toList());</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

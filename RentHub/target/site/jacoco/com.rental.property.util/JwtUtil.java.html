@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.rental.property.util</a> &gt; <span class="el_source">JwtUtil.java</span></div><h1>JwtUtil.java</h1><pre class="source lang-java linenums">package com.rental.property.util;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+@Getter
+@Setter
+@Component
+<span class="fc" id="L21">@Slf4j</span>
+<span class="fc" id="L22">public class JwtUtil {</span>
+    @Value(&quot;${jwt.secret}&quot;)
+    private String secret;
+    @Value(&quot;${jwt.expiration:900000}&quot;)
+    private Long expiration;
+
+    private SecretKey getSigningKey() {
+<span class="fc" id="L29">        return Keys.hmacShaKeyFor(secret.getBytes());</span>
+    }
+    public String extractUsername(String token) {
+<span class="fc" id="L32">        return extractClaim(token, Claims::getSubject);</span>
+    }
+    public Date extractExpiration(String token) {
+<span class="fc" id="L35">        return extractClaim(token, Claims::getExpiration);</span>
+    }
+    public &lt;T&gt; T extractClaim(String token, Function&lt;Claims, T&gt; claimsResolver) {
+<span class="fc" id="L38">        final Claims claims = extractAllClaims(token);</span>
+<span class="fc" id="L39">        return claimsResolver.apply(claims);</span>
+    }
+    private Claims extractAllClaims(String token) {
+<span class="fc" id="L42">        return Jwts.parser()</span>
+<span class="fc" id="L43">                .verifyWith(getSigningKey())</span>
+<span class="fc" id="L44">                .build()</span>
+<span class="fc" id="L45">                .parseSignedClaims(token)</span>
+<span class="fc" id="L46">                .getPayload();</span>
+    }
+    private Boolean isTokenExpired(String token) {
+<span class="fc" id="L49">        return extractExpiration(token).before(new Date());</span>
+    }
+    public String generateToken(UserDetails userDetails) {
+<span class="fc" id="L52">        Map&lt;String, Object&gt; claims = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L53">        return createToken(claims, userDetails.getUsername());</span>
+    }
+    private String createToken(Map&lt;String, Object&gt; claims, String subject) {
+<span class="fc" id="L56">        return Jwts.builder()</span>
+<span class="fc" id="L57">                .claims(claims)</span>
+<span class="fc" id="L58">                .subject(subject)</span>
+<span class="fc" id="L59">                .issuedAt(new Date(System.currentTimeMillis()))</span>
+<span class="fc" id="L60">                .expiration(new Date(System.currentTimeMillis() + expiration))</span>
+<span class="fc" id="L61">                .issuer(&quot;RentHub&quot;)</span>
+<span class="fc" id="L62">                .audience().add(&quot;User&quot;).and()</span>
+<span class="fc" id="L63">                .signWith(getSigningKey())</span>
+<span class="fc" id="L64">                .compact();</span>
+    }
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        try {
+<span class="fc" id="L68">            final String username = extractUsername(token);</span>
+<span class="pc bpc" id="L69" title="2 of 4 branches missed.">            return (username.equals(userDetails.getUsername()) &amp;&amp; !isTokenExpired(token));</span>
+<span class="fc" id="L70">        } catch (Exception e) {</span>
+<span class="fc" id="L71">            log.error(&quot; Exception in validateToken {} with message &quot;, e.getCause(), e.getMessage());</span>
+<span class="fc" id="L72">            return false;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

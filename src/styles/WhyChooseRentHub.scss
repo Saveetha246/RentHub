@@ -1,0 +1,82 @@
+$color1: #1A3E72;
+$color2: #3D52A0;
+$color3: #7091E6;
+$color4: #8697C4;
+$color5: #ADBBDA;
+$color6: #EDE8F5;
+$color7:#00b4a6;
+$font: 'Poppins','Roboto',sans-serif;
+ 
+.why-choose-rent-hub {
+  background: white;
+  padding: 30px;
+  border-radius: 0px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  font-family: $font;
+ 
+ 
+  h2 {
+    color: $color1;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+ 
+  .intro {
+    font-size: 1.1rem;
+    color: $color2;
+    margin-bottom: 20px;
+  }
+ 
+  .steps {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+ 
+    .step {
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      width: 75%;
+      background: $color1;  
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: 0.3s ease-in-out;
+      position: relative;
+ 
+      &:hover {
+        transform: scale(1.02);
+      }
+ 
+      .icon {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: $color7;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.6rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        margin-right: 15px;
+      }
+ 
+      .info {
+        text-align: left;
+ 
+        h2 {
+          font-size: 1.4rem;
+          color: $color6; 
+        }
+ 
+        p {
+          font-size: 0.95rem;
+          color: $color5;
+        }
+      }
+    }
+  }
+}
